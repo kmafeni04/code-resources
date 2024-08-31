@@ -1,0 +1,347 @@
+.bold {
+  font-weight: 700;
+}
+
+.input {
+  background-color: transparent;
+  border: solid 1px var(--font-color);
+  border-radius: var(--border-radius-extra-small);
+  padding: 0.5rem 0.75rem;
+}
+
+.input[data-inverse] {
+  background-color: var(--font-color);
+  color: var(--font-color-inverse);
+}
+
+.btn {
+  font-weight: 700;
+  transition: 0.2s;
+}
+
+.btn[data-fit] {
+  width: fit-content;
+}
+
+.no-decoration {
+  text-decoration: none;
+}
+
+.btn[data-clicked] {
+  background-color: var(--font-color);
+  color: var(--font-color-inverse);
+}
+
+.btn:hover,
+.btn:focus {
+  background-color: var(--font-color);
+  color: var(--font-color-inverse);
+}
+
+.btn-danger {
+  background-color: red;
+  color: white;
+  border: none;
+  font-weight: 700;
+  transition: 0.2s;
+}
+
+.btn-danger:hover,
+.btn-danger:focus {
+  box-shadow: 0 0 5px 1px red;
+}
+
+.visible {
+  display: block;
+}
+
+.hidden {
+  display: none;
+}
+
+.height-max {
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+.height-100 {
+  height: 100%;
+}
+
+.height-75 {
+  height: 75%;
+}
+
+.height-50 {
+  height: 50%;
+}
+
+.height-25 {
+  height: 25%;
+}
+
+.width-max {
+  min-width: 100vw;
+}
+
+.width-100 {
+  width: 100%;
+}
+
+.width-75 {
+  width: 75%;
+}
+
+.width-50 {
+  width: 50%;
+}
+
+.width-25 {
+  width: 25%;
+}
+
+.padding-xs {
+  padding: 1rem;
+}
+
+.padding-s {
+  padding: 2rem;
+}
+
+.padding-m {
+  padding: 4rem;
+}
+
+.padding-l {
+  padding: 6rem;
+}
+
+.padding-xl {
+  padding: 8rem;
+}
+
+.padding-b-xs {
+  padding-block: 1rem;
+}
+
+.padding-b-s {
+  padding-block: 2rem;
+}
+
+.padding-b-m {
+  padding-block: 4rem;
+}
+
+.padding-b-l {
+  padding-block: 6rem;
+}
+
+.padding-b-xl {
+  padding-block: 8rem;
+}
+
+.padding-i-xs {
+  padding-inline: 1rem;
+}
+
+.padding-i-s {
+  padding-inline: 2rem;
+}
+
+.padding-i-m {
+  padding-inline: 4rem;
+}
+
+.padding-i-l {
+  padding-inline: 6rem;
+}
+
+.padding-i-xl {
+  padding-inline: 8rem;
+}
+
+.fixed {
+  position: fixed;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.sticky {
+  position: sticky;
+}
+
+.relative {
+  position: relative;
+}
+
+.top-0 {
+  top: 0;
+}
+
+.bottom-0 {
+  bottom: 0;
+}
+
+.left-0 {
+  left: 0;
+}
+
+.right-0 {
+  right: 0;
+}
+
+.gap-xs {
+  gap: 0.5rem;
+}
+
+.gap-s {
+  gap: 1rem;
+}
+
+.gap-m {
+  gap: 2rem;
+}
+
+.gap-l {
+  gap: 4rem;
+}
+.gap-xl {
+  gap: 6rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-col-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.flex-basis-33 {
+  flex-grow: 1;
+  flex-basis: 32%;
+}
+
+.flex-basis-50 {
+  flex-grow: 1;
+  flex-basis: 49%;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.align-start {
+  align-items: start;
+}
+
+.align-end {
+  align-items: end;
+}
+
+.align-self-start {
+  align-self: start;
+}
+
+.align-self-center {
+  align-self: center;
+}
+
+.align-self-end {
+  align-self: end;
+}
+
+.justify-center {
+  justify-content: center;
+  justify-items: center;
+}
+
+.justify-start {
+  justify-content: start;
+  justify-items: start;
+}
+
+.justify-end {
+  justify-content: end;
+  justify-items: end;
+}
+
+.justify-space-between {
+  justify-content: space-between;
+}
+
+.justify-self-start {
+  justify-self: start;
+}
+
+.justify-self-center {
+  justify-self: center;
+}
+
+.justify-self-end {
+  justify-self: end;
+}
+
+.grid {
+  display: grid;
+}
+
+.grid-center {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+}
+
+.radius-100 {
+  border-radius: 100%;
+}
+
+.radius-xs {
+  border-radius: 0.5rem;
+}
+
+.radius-s {
+  border-radius: 1rem;
+}
+
+.radius-m {
+  border-radius: 2rem;
+}
+
+.radius-l {
+  border-radius: 4rem;
+}
+
+.radius-xl {
+  border-radius: 6rem;
+}
+
+.radius-max {
+  border-radius: 9999px;
+}
+:root {
+  --border-radius-extra-small: 0.5rem;
+  --border-radius-small: 1rem;
+  --border-radius-medium: 2rem;
+  --border-radius-large: 4rem;
+}
