@@ -9,7 +9,7 @@
   --> Prints "TSET"
   ```
   
-  If you would like to see what each function does to the parameter, you can set the debug boolean to true
+  If you would like to see what each function does to the parameter, you can set `dbg` to `true`
   ```lua
   local val = pipe("test", true, string.reverse, string.upper)
   print(val)
@@ -32,7 +32,7 @@
 ---@param dbg boolean
 ---@param ... PipeFunc
 ---@return any
----@overload fun(param: any, ...: PipeFunc)
+---@overload fun(param: any, ...: PipeFunc): any
 local pipe = function(param, dbg, ...)
   local current_param = param
   local funcs = { ... }
@@ -50,16 +50,4 @@ local pipe = function(param, dbg, ...)
   return current_param
 end
 
-local val = pipe(1, true, tostring, function(x)
-  local tbl = {}
-  table.insert(tbl, x)
-  return tbl
-end, function(x)
-  table.insert(x, "hello")
-  return x
-end, function(x)
-  return x[2]
-end, string.upper)
-
-print(val)
 return pipe
