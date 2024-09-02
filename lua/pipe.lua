@@ -35,6 +35,9 @@
 ---@overload fun(param: any, ...: PipeFunc): any
 local pipe = function(param, dbg, ...)
   local current_param = param
+  if type(param) == "function" then
+    current_param = param()
+  end
   local funcs = { ... }
   if type(dbg) == "function" then
     table.insert(funcs, 1, dbg)
