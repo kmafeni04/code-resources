@@ -11,14 +11,11 @@
   print(interp("The {{no_var}} variable isn't present"))
   --> Prints "The {{no_var}} variable isn't present"
   ```
-  Note:
-  This only works with variables
-  If you would like to use table fields or the returns of a function, assign them to a variable
+  Works with expressions and table fields
   ```lua
-  local tbl = { val = 1 }
-  local tbl_val = tbl.val
-  print(interp("{{tbl_val}}"))
-  --> Prints "1"
+  local tbl = { a = 1 }
+  print(interp("The value of tbl.a + 1 is {{tbl.a + 1}}"))
+  --> Prints "The value of tbl.a + 1 is 2"
   ```
 ]]
 ---@param str string
@@ -26,24 +23,37 @@
 local function interp(str)
   local variables = {}
   local idx = 1
-
   repeat
     local key, value = debug.getlocal(2, idx)
     if key ~= nil then
-      variables[key] = tostring(value)
+      variables[key] = value
     end
     idx = idx + 1
   until key == nil
+
   for key, value in pairs(_G) do
     variables[key] = value
   end
 
-  for word in str:gmatch("{{%s*([%w_]+)%s*}}") do
-    if variables[word] then
-      str = str:gsub("{{%s*(" .. word .. ")%s*}}", variables[word], 1)
+  local function eval(expr)
+    local func, _ = load("return " .. expr, nil, nil, variables)
+    if func then
+      local success, result = pcall(func)
+      if success then
+        return tostring(result)
+      end
     end
   end
-  return str
+
+  local new_str = str:gsub("{{(.-)}}", function(expr)
+    return eval(expr:match("^%s*(.-)%s*$"))
+  end)
+
+  if new_str ~= "nil" then
+    return new_str
+  else
+    return str
+  end
 end
 
 return interp
