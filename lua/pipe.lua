@@ -1,4 +1,4 @@
----@alias PipeFunc fun(x: any): any
+---@alias PipeFunc fun(...: any): ...?
 --[[
   Implements the "pipe operator" seen in functional languages, where the return of the previous function is the first parameter of the next
 
@@ -14,10 +14,10 @@
   local val = pipe("test", true, string.reverse, string.upper)
   print(val)
   --> Prints "Return of function 1:
-  --          tset
+  --          1: tset
   --          
   --          Return of function 2:
-  --          TSET
+  --          1: TSET
   --          
   --          TSET"
   ```
@@ -31,26 +31,30 @@
 ---@param param any
 ---@param dbg boolean
 ---@param ... PipeFunc
----@return any
+---@return ...?
 ---@overload fun(param: any, ...: PipeFunc): any
 local pipe = function(param, dbg, ...)
-  local current_param = param
+  local unpack = table.unpack or unpack
+
   if type(param) == "function" then
-    current_param = param()
+    param = param()
   end
+  local current_params = { param }
   local funcs = { ... }
   if type(dbg) == "function" then
     table.insert(funcs, 1, dbg)
   end
-  for key, func in pairs(funcs) do
-    current_param = func(current_param)
+  for index, func in ipairs(funcs) do
+    current_params = { func(unpack(current_params)) }
     if dbg == true then
-      print("Return of function " .. key .. ":")
-      print(tostring(current_param))
+      print("Return of function " .. index .. ":")
+      for param_index, param_value in ipairs(current_params) do
+        print(param_index .. ": " .. tostring(param_value))
+      end
       print()
     end
   end
-  return current_param
+  return unpack(current_params)
 end
 
 return pipe

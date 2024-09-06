@@ -34,6 +34,15 @@
   print(val)
   --> Prints nil
   ```  
+  It also suppprts mathcing multiple cases to one function
+  ```lua
+  local expr = "value"
+  local val = switch(expr, {
+    [{"value", "value2"}]= function() return "A value" end,
+  })
+  print(val)
+  --> Prints "A value"
+  ```
   ]]
 ---@param expr any
 ---@param cases Cases
@@ -42,13 +51,22 @@ local function switch(expr, cases)
   if type(expr) == "function" then
     expr = expr()
   end
+  if cases[expr] then
+    return cases[expr]()
+  end
+  for key, value in pairs(cases) do
+    if type(key) == "table" then
+      for _, subexpr in ipairs(key) do
+        if subexpr == expr then
+          return value()
+        end
+      end
+    end
+  end
   if not cases[expr] and cases["default"] then
     return cases["default"]()
-  elseif cases[expr] then
-    return cases[expr]()
-  else
-    return nil
   end
+  return nil
 end
 
 return switch

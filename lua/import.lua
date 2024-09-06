@@ -19,9 +19,7 @@ local vars = {}
   -- main.lua
 
   local import = require("import")
-  import.from("module")
-  import.import("hi")
-  import.as("h")
+  import.from("module").import("hi").as("h")
 
   print(import.h)
   --> Prints "hello"
@@ -43,6 +41,7 @@ local import = {}
 ---@param module string
 import.from = function(module)
   mod = require(module)
+  return import
 end
 
 --[[
@@ -56,6 +55,7 @@ end
 ]]
 ---@param entities string[] | string
 import.import = function(entities)
+  vars = {}
   if type(entities) == "string" then
     vars[1] = mod[entities]
     import[entities] = vars[1]
@@ -66,6 +66,7 @@ import.import = function(entities)
       import[entity] = vars[index]
     end
   end
+  return import
 end
 --[[
   Alias your imports
@@ -86,6 +87,7 @@ import.as = function(names)
       import[name] = vars[index]
     end
   end
+  return import
 end
 
 return import

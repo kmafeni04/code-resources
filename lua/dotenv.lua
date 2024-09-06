@@ -74,9 +74,10 @@ dotenv.env = {}
   Returns the value of that variable or nil
 ]]
 ---@param env string
+---@param default? string default value if no env is found
 ---@return string? env
-function dotenv.env:get(env)
-  self[env] = self[env] or os.getenv(env)
+function dotenv.env:get(env, default)
+  self[env] = self[env] or os.getenv(env) or default
   return self[env]
 end
 

@@ -5,9 +5,9 @@ local bcrypt_utils = {}
 ---@param str string
 ---@return string
 function bcrypt_utils.encrypt(str)
-	local log_rounds = 5
-	local hash = bcrypt.digest(str, log_rounds)
-	return hash
+  local log_rounds = 5
+  local hash = bcrypt.digest(str, log_rounds)
+  return hash
 end
 
 --- Verifies that a given string matches a given hash value
@@ -15,7 +15,7 @@ end
 ---@param hash string
 ---@return string?
 function bcrypt_utils.verify(str, hash)
-	return bcrypt.verify(str, hash)
+  return bcrypt.verify(str, hash)
 end
 
 return bcrypt_utils

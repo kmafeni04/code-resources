@@ -1,6 +1,6 @@
 :root {
-  --clr-dark-800: black;
-  --clr-light-800: white;
+  --clr-dark-900: black;
+  --clr-light-900: white;
 }
 
 @media (prefers-color-scheme: light) {
