@@ -36,12 +36,22 @@ local function interp(str)
   end
 
   local function eval(expr)
-    local func, _ = load("return " .. expr, nil, nil, variables)
+    local func
+    if _VERSION == "Lua 5.1" then
+      func, _ = loadstring("return " .. expr)
+      if func then
+        setfenv(func, variables)
+      end
+    else
+      func, _ = load("return " .. expr, nil, nil, variables)
+    end
     if func then
       local success, result = pcall(func)
       if success then
         return tostring(result)
       end
+    else
+      return "{{" .. expr .. "}}"
     end
   end
 
@@ -49,11 +59,7 @@ local function interp(str)
     return eval(expr:match("^%s*(.-)%s*$"))
   end)
 
-  if new_str ~= "nil" then
-    return new_str
-  else
-    return str
-  end
+  return new_str
 end
 
 return interp
