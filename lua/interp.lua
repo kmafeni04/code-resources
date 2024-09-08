@@ -47,7 +47,7 @@ local function interp(str)
     end
     if func then
       local success, result = pcall(func)
-      if success then
+      if success and result then
         return tostring(result)
       end
     else
