@@ -23,24 +23,43 @@
 local function interp(str)
   local variables = {}
   local idx = 1
-
   repeat
     local key, value = debug.getlocal(2, idx)
     if key ~= nil then
-      variables[key] = tostring(value)
+      variables[key] = value
     end
     idx = idx + 1
   until key == nil
+
   for key, value in pairs(_G) do
     variables[key] = value
   end
 
-  for word in str:gmatch("{{%s*([%w_]+)%s*}}") do
-    if variables[word] then
-      str = str:gsub("{{%s*(" .. word .. ")%s*}}", variables[word], 1)
+  local function eval(expr)
+    local func
+    if _VERSION == "Lua 5.1" then
+      func, _ = loadstring("return " .. expr)
+      if func then
+        setfenv(func, variables)
+      end
+    else
+      func, _ = load("return " .. expr, nil, nil, variables)
+    end
+    if func then
+      local success, result = pcall(func)
+      if success and result then
+        return tostring(result)
+      end
+    else
+      return "{{" .. expr .. "}}"
     end
   end
-  return str
+
+  local new_str = str:gsub("{{(.-)}}", function(expr)
+    return eval(expr:match("^%s*(.-)%s*$"))
+  end)
+
+  return new_str
 end
 
 local function print_help()

@@ -12,6 +12,7 @@
     background-color: white;
   }
 }
+
 @media (prefers-color-scheme: dark) {
   :root {
     --font-color: var(--clr-light-900);
@@ -64,12 +65,26 @@ body {
   min-height: 100vh;
 }
 
+table {
+  text-indent: 0;
+  border-color: inherit;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
 img,
 video,
 svg,
 picture {
   display: block;
   width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
 
 button {

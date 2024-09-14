@@ -119,12 +119,10 @@ return {
   io.close()
 
   os.execute("lapis generate model users")
-  gitignore_content = [[
-logs/
+  gitignore_content = [[logs/
 nginx.conf.compiled
 *.sqlite
-*_temp/
-]]
+*_temp/]]
   config_content = [[
 local config = require("lapis.config")
 
@@ -146,14 +144,11 @@ config("production", {
   sqlite = {
     database = "app.sqlite"
   }
-})
-]]
+}) ]]
 elseif db == 2 or db == "no-db" then
-  gitignore_content = [[
-logs/
+  gitignore_content = [[logs/
 nginx.conf.compiled
-*_temp/
-]]
+*_temp/]]
   config_content = [[
 local config = require("lapis.config")
 
@@ -169,8 +164,7 @@ config("production", {
   port = "8080",
   code_cache = "on",
   num_workers = "auto",
-})
-]]
+}) ]]
 end
 
 local gitignore_file = io.open(".gitignore", "w")
@@ -216,8 +210,7 @@ RUN lapis migrate production
 
 EXPOSE 8080
 
-CMD ["lapis", "server", "production"]
-  ]]
+CMD ["lapis", "server", "production"] ]]
   else
     docker_content = [[
 FROM openresty/openresty:jammy
@@ -237,8 +230,7 @@ RUN lapis migrate production
 
 EXPOSE 8080
 
-CMD ["lapis", "server", "production"]
-  ]]
+CMD ["lapis", "server", "production"] ]]
   end
 
   local docker_file = io.open("Dockerfile", "w")
@@ -253,8 +245,7 @@ app:get("/", function()
   return { json = { hello = "world"} }
 end)
 
-return app
-  ]]
+return app]]
 
   local app_lua_file = io.open("app.lua", "w+")
   io.output(assert(app_lua_file))
@@ -287,8 +278,7 @@ app:get("/", function()
   return {render = "index"}
 end)
 
-return app
-  ]]
+return app]]
 
     local app_lua_file = io.open("app.lua", "w+")
     io.output(assert(app_lua_file))
@@ -303,8 +293,7 @@ return app
   Welcome to
   <a href="https://leafo.net/lapis/" target="_blank">Lapis <%= require("lapis.version")%></a>
 </h1>
-<p>Edit the index.etlua file in ./views to begin</p>
-    ]]
+<p>Edit the index.etlua file in ./views to begin</p>]]
 
     local index_etlua_file = io.open("index.etlua", "w")
     io.output(assert(index_etlua_file))
@@ -325,8 +314,7 @@ return app
       <% content_for("inner") %>
     </main>
   </body>
-</html>
-    ]]
+</html>]]
 
     local app_etlua_layout_file = io.open("layout.etlua", "w")
     io.output(assert(app_etlua_layout_file))
@@ -359,8 +347,7 @@ RUN lapis migrate production
 
 EXPOSE 8080
 
-CMD ["lapis", "server", "production"]
-  ]]
+CMD ["lapis", "server", "production"] ]]
     else
       docker_content = [[
 FROM openresty/openresty:jammy
@@ -381,8 +368,7 @@ RUN lapis migrate production
 
 EXPOSE 8080
 
-CMD ["lapis", "server", "production"]
-  ]]
+CMD ["lapis", "server", "production"] ]]
     end
     local docker_file = io.open("Dockerfile", "w")
     io.output(assert(docker_file))
@@ -398,8 +384,7 @@ app:get("/", function()
   return {render = "index"}
 end)
 
-return app
-  ]]
+return app]]
 
     local app_lua_file = io.open("app.lua", "w+")
     io.output(assert(app_lua_file))
@@ -418,9 +403,7 @@ return Widget:extend(function(self)
     a({ href = "https://leafo.net/lapis/", target = "_blank" }, "lapis " .. require("lapis.version"))
   end)
   p("Edit the index.lua file in ./views to begin")
-end)
-
-  ]]
+end)]]
 
     local index_lua_file = io.open("index.lua", "w")
     io.output(assert(index_lua_file))
@@ -445,8 +428,7 @@ return Widget:extend(function(self)
       end)
     end)
   end)
-end)
-    ]]
+end)]]
 
     local app_lua_layout_file = io.open("layout.lua", "w")
     io.output(assert(app_lua_layout_file))
@@ -476,8 +458,7 @@ RUN lapis migrate production
 
 EXPOSE 8080
 
-CMD ["lapis", "server", "production"]
-  ]]
+CMD ["lapis", "server", "production"] ]]
     else
       docker_content = [[
 FROM openresty/openresty:jammy
@@ -497,8 +478,7 @@ RUN lapis migrate production
 
 EXPOSE 8080
 
-CMD ["lapis", "server", "production"]
-  ]]
+CMD ["lapis", "server", "production"] ]]
     end
 
     local docker_file = io.open("Dockerfile", "w")
@@ -515,7 +495,7 @@ CMD ["lapis", "server", "production"]
   lfs.chdir("css")
 
   local reset_css_content = [[
-  :root {
+:root {
   --clr-dark-900: black;
   --clr-light-900: white;
 }
@@ -529,6 +509,7 @@ CMD ["lapis", "server", "production"]
     background-color: white;
   }
 }
+
 @media (prefers-color-scheme: dark) {
   :root {
     --font-color: var(--clr-light-900);
@@ -577,8 +558,15 @@ html {
 
 body {
   color: var(--font-color);
-  min-height: 100vh;
   min-height: 100svh;
+  min-height: 100vh;
+}
+
+table {
+  text-indent: 0;
+  border-color: inherit;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
 img,
@@ -589,15 +577,20 @@ picture {
   width: 100%;
 }
 
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
 button {
   cursor: pointer;
 }
 
-code,
-kbd {
+code {
   font-family: monospace;
-}
-  ]]
+}]]
 
   local reset_css_file = io.open("reset.css", "w")
   io.output(assert(reset_css_file))
