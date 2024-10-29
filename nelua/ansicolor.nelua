@@ -1,0 +1,56 @@
+--[[
+Mini library for coloring text in the terminal using ANSI escape codes
+
+Example usage:
+
+print(AnsiColor.Red("hello"))
+--> Prints out "hello" in red
+]]
+
+require 'string'
+
+-- Reset, Clear, Default may be redundant but left in anyways
+##[[
+  local ansicolors = {
+    Reset      = 0,
+    Clear      = 0,
+    Default    = 0,
+    Bright     = 1,
+    Dim        = 2,
+    Underscore = 4,
+    Blink      = 5,
+    Reverse    = 7,
+    Hidden     = 8,
+
+    Black      = 30,
+    Red        = 31,
+    Green      = 32,
+    Yellow     = 33,
+    Blue       = 34,
+    Magenta    = 35,
+    Cyan       = 36,
+    White      = 37,
+
+    OnBlack    = 40,
+    OnRed      = 41,
+    OnGreen    = 42,
+    OnYellow   = 43,
+    OnBlue     = 44,
+    OnMagenta  = 45,
+    OnCyan     = 46,
+    OnWhite    = 4,
+    
+  }
+]]
+
+local AnsiColor = @record{}
+
+## for color, code in pairs(ansicolors) do
+  function AnsiColor.#|color|#(str: string): string
+    return "\27[" .. #[code]# .. "m" .. str .. "\27[0m"
+  end
+## end
+
+return AnsiColor
+
+
