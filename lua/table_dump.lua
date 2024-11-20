@@ -24,7 +24,7 @@ local function table_dump(tbl)
     end
     str = str .. "[" .. key .. "] = " .. tostring(value) .. ", "
   end
-  return str .. "}"
+  return str .. " }"
 end
 
 return table_dump

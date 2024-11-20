@@ -42,30 +42,33 @@ local function check_dir(directory, callback, config)
         recursive = config.recursive and config.recursive or recursive
         if config.exclude_file_types then
           for _, file_type in ipairs(config.exclude_file_types) do
-            file_path = file_path:gsub("([%(%)%.%%%+%-%*%?%[%]%^%$])", "%%%1")
-            file_type = file_type:gsub("([%(%)%.%%%+%-%*%?%[%]%^%$])", "%%%1")
             local file_match = (
-              file_path:match(".*%." .. file_type .. "$")
-              or file_path:match("^" .. file_type:sub(2) .. "$")
-            ) ~= nil
+              file_path:match("^.*%." .. file_type .. "$")
+              or file_path == directory .. "/" .. file_type:sub(2)
+            )
+                and true
+              or false
 
-            if file_match then
+            local ignore_bck = file_path:match(".*%.bck")
+
+            if not file_match and not ignore_bck then
+              check_modification(file_path, callback)
               break
             end
-            check_modification(file_path, callback)
           end
         elseif config.only_file_types then
           for _, file_type in ipairs(config.only_file_types) do
-            file_path = file_path:gsub("([%(%)%.%%%+%-%*%?%[%]%^%$])", "%%%1")
-            file_type = file_type:gsub("([%(%)%.%%%+%-%*%?%[%]%^%$])", "%%%1")
             local file_match = (
-              file_path:match(".*%." .. file_type .. "$")
-              or file_path:match("^" .. file_type:sub(2) .. "$")
-            ) ~= nil
+              file_path:match("^.*%." .. file_type .. "$")
+              or file_path == directory .. "/" .. file_type:sub(2)
+            )
+                and true
+              or false
 
-            if file_match then
+            local ignore_bck = file_path:match(".*%.bck")
+
+            if file_match and not ignore_bck then
               check_modification(file_path, callback)
-            else
               break
             end
           end
