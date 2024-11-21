@@ -1,9 +1,9 @@
-#!/bin/lua5.1
+#!/usr/bin/lua
 
 -- Generates a new file/files in a lapis project from a gen-type
 
 -- REQUIREMNTS:
--- lua5.1, luarocks
+-- luarocks
 --
 -- Save this script in your $PATH as lapis-gen and give the file execute permissions (chmod +x lapis-gen)
 --
@@ -103,7 +103,7 @@ end
 
 local haslfs, lfs = pcall(require, "lfs")
 if not haslfs then
-  os.execute("luarocks install luafilesystem --lua-version=5.1")
+  os.execute("luarocks install luafilesystem")
   lfs = require("lfs")
 end
 

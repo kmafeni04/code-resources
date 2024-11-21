@@ -1,9 +1,9 @@
-#!/bin/lua5.1
+#!/usr/bin/lua
 
 -- Lapis project initialise script
 
 -- REQUIREMENTS:
--- lua5.1, luarocks, git
+-- luarocks, git
 
 -- USAGE:
 -- Save this script in your $PATH as lapis-new and give the file execute permissions (chmod +x lapis-new)
@@ -18,7 +18,7 @@
 
 local haslfs, lfs = pcall(require, "lfs")
 if not haslfs then
-  os.execute("luarocks install luafilesystem --lua-version=5.1")
+  os.execute("luarocks install luafilesystem")
   lfs = require("lfs")
 end
 for index in pairs(arg) do
@@ -68,7 +68,7 @@ lfs.chdir(project_name)
 local haslapis, _ = pcall(require, "lapis")
 if not haslapis then
   print("lapis not installed, installing...")
-  os.execute("luarocks install lapis --lua-version=5.1")
+  os.execute("luarocks install lapis")
 end
 os.execute("lapis new --rockspec")
 os.execute("git init")
@@ -92,7 +92,7 @@ if db == 1 or db == "db" then
   local haslsqlite, _ = pcall(require, "lsqlite3")
   if not haslsqlite then
     print("lsqlite not installed, installing...")
-    os.execute("luarocks install lsqlite3 --lua-version=5.1")
+    os.execute("luarocks install lsqlite3")
   end
   local migrations_content = [[
 local db = require("lapis.db")
@@ -266,7 +266,7 @@ elseif tonumber(project_type) == 2 or project_type == "full" then
     local hasetlua, _ = pcall(require, "etlua")
     if not hasetlua then
       print("etlua not installed, installing...")
-      os.execute("luarocks install etlua --lua-version=5.1")
+      os.execute("luarocks install etlua")
     end
     local app_lua_content = [[
 local lapis = require("lapis")
