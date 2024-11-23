@@ -40,7 +40,6 @@ require 'string'
     OnMagenta  = 45,
     OnCyan     = 46,
     OnWhite    = 4,
-    
   }
 ]]
 
@@ -48,20 +47,19 @@ global AnsiColor = @record{
   data: string
 }
 
-local ansi_color: AnsiColor
-
 function AnsiColor.new(str: string)
+  local ansi_color: AnsiColor
   ansi_color.data = str
   return ansi_color
 end
 
 ## for color, code in pairs(ansicolors) do
 function AnsiColor:#|color|#(): AnsiColor
-  ansi_color.data = "\27[" .. #[code]# .. "m" .. ansi_color.data .. "\27[0m"
-  return ansi_color
+  self.data = "\27[" .. #[code]# .. "m" .. self.data .. "\27[0m"
+  return $self
 end
 ## end
 
 function AnsiColor:tostring(): string
-  return ansi_color.data
+  return self.data
 end
