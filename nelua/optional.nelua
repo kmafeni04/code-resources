@@ -1,0 +1,30 @@
+## local function make_optional(T)
+  ## static_assert(traits.is_type(T), "invalid type '%s'", T)
+  local T: type = @#[T]#
+
+  local OptionalT: type <nickname(#[string.format("Optional(%s)", T)]#)> = @record{
+    filled: boolean,
+    value: T
+  }
+
+  ## OptionalT.value.is_optional = true
+  ## OptionalT.value.subtype = T
+
+  function OptionalT:set(v: T)
+    self.filled = true
+    self.value = v
+  end
+
+  function OptionalT:clear()
+    self.filled = false
+    self.value = (@T)()
+  end
+
+  function OptionalT:get(): T
+    return self.value
+  end
+  
+  ## return OptionalT
+## end
+
+global Optional = #[generalize(make_optional)]#
