@@ -43,7 +43,7 @@ require 'string'
   }
 ]]
 
-global AnsiColor = @record{
+local AnsiColor = @record{
   data: string
 }
 
