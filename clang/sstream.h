@@ -1,9 +1,7 @@
-#ifndef SSTREAM_H
-#define SSTREAM_H
+#ifndef SSTREAM_H_
+#define SSTREAM_H_
+
 #include <stdbool.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 typedef struct {
@@ -19,11 +17,20 @@ bool Ss_addmany(Sstream *ss, char *strings[], size_t num_strings);
 bool Ss_addlist(Sstream *ss, char *strings[], size_t num_strings, char *sep);
 char *Ss_tostring(Sstream *ss);
 
-#endif
+#endif // SSTREAM_H_
 
 #ifdef SSTREAM_IMPLEMENTATION
 
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 bool Ss_init(Sstream *ss) {
+  if (ss == NULL) {
+    fprintf(stderr, "ERROR: Parameter `ss` can not be null, %s:%d\n", __FILE__,
+            __LINE__);
+    return false;
+  }
   ss->data = NULL;
   ss->max_size = 0;
   ss->current_size = 0;
@@ -33,12 +40,14 @@ bool Ss_init(Sstream *ss) {
 
 bool Ss_add(Sstream *ss, char *str) {
   if (ss == NULL || str == NULL) {
-    fprintf(stderr, "ERROR: Parameters can not be null\n");
+    fprintf(stderr, "ERROR: Parameters can not be null, %s:%d\n", __FILE__,
+            __LINE__);
     return false;
   }
 
   if (!ss->init) {
-    fprintf(stderr, "ERROR: Sstream has not been initialized\n");
+    fprintf(stderr, "ERROR: Sstream has not been initialized, %s:%d\n",
+            __FILE__, __LINE__);
     return false;
   }
   size_t size = strlen(str);
@@ -48,16 +57,13 @@ bool Ss_add(Sstream *ss, char *str) {
     ss->max_size = new_size * 2;
     ss->data = (char *)realloc(ss->data, ss->max_size);
     if (ss->data == NULL) {
-      fprintf(stderr, "ERROR: Memory allocation failed\n");
+      fprintf(stderr, "ERROR: Memory allocation failed, %s:%d\n", __FILE__,
+              __LINE__);
       return false;
     }
   }
 
-  size_t offset = ss->current_size;
-  for (int i = 0; i < size; i++) {
-    size_t actual_size = i + offset;
-    ss->data[actual_size] = str[i];
-  }
+  memcpy(ss->data + ss->current_size, str, new_size - ss->current_size);
   ss->current_size = new_size;
   return true;
 }
@@ -87,17 +93,20 @@ bool Ss_addlist(Sstream *ss, char *strings[], size_t num_strings, char *sep) {
 
 char *Ss_tostring(Sstream *ss) {
   if (ss == NULL) {
-    fprintf(stderr, "ERROR: Sstream can not be NULL\n");
+    fprintf(stderr, "ERROR: Sstream can not be NULL, %s:%d\n", __FILE__,
+            __LINE__);
     return NULL;
   }
   if (ss->data == NULL) {
-    fprintf(stderr, "ERROR: Sstream data can not be NULL\n");
+    fprintf(stderr, "ERROR: Sstream data can not be NULL, %s:%d\n", __FILE__,
+            __LINE__);
     return NULL;
   }
 
-  char *str = malloc(ss->current_size + 1);
+  char *str = (char *)malloc(ss->current_size + 1);
   if (str == NULL) {
-    fprintf(stderr, "ERROR: Memory allocation failed\n");
+    fprintf(stderr, "ERROR: Memory allocation failed, %s:%d\n", __FILE__,
+            __LINE__);
     return NULL;
   }
 
@@ -111,4 +120,4 @@ char *Ss_tostring(Sstream *ss) {
 
   return str;
 }
-#endif
+#endif // SSTREAM_IMPLEMENTATION
