@@ -51,6 +51,9 @@ local function switch(expr, cases)
   if type(expr) == "function" then
     expr = expr()
   end
+  for key in pairs(cases) do
+    assert(type(cases[key]) == "function", ("The value at key `%s` is not of type `function`"):format(tostring(key)))
+  end
   if cases[expr] then
     return cases[expr]()
   end

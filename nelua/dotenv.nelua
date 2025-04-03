@@ -1,0 +1,119 @@
+-- Original work: veeponym, https://gist.github.com/veeponym/6a8f7ba661032ddce1e941095a998a69
+
+require "io"
+require "os"
+require "hashmap"
+
+--[[
+  Implements the ability to use `.env` files while also being a drop in replacement for `os.getenv`
+
+  Usage:
+  ```lua
+  local dotenv = require("dotenv")
+  local env, err = dotenv:load()
+  -- Handle the err as you see fit, it's an empty string if there's none
+  local var = env:get("YOUR_VAR")
+  ```
+]]
+
+--[[
+  Record containing all your env variables
+]]
+local Env = @record{
+  vars: hashmap(string, string)
+}
+
+--[[
+  Gets the environment variable from the .env file or directly from the os
+  Returns the value of that variable or nil
+]]
+function Env:get(env: string, default: string): string
+  if self.vars:has(env) then
+    return self.vars[env]
+  end
+  local val = os.getenv(env)
+  if default ~= "" and val == "" then
+    val = default
+  end
+  return val
+end
+
+local Dotenv = @record{  
+  env: Env
+}
+
+local function trim_space(s: string): string
+  local s_match, s_seq = s:match("^%s*(.-)%s*$")
+  if not s_match then
+    return s
+  end
+  return s_seq[1]
+end
+
+--- Reads a file
+--- Returns its contents as a string or and empty string with an error string
+local function read_file(filename: string): (string, string)
+  local file = io.open(filename, "r")
+  if not file then
+    return "", "File not found: " .. filename
+  end
+  local content = file:read("*a")
+  file:close()
+  return content, ""
+end
+
+--- Parses the `.env` file's content
+local function parse_env(content: string): hashmap(string, string)
+  local items: hashmap(string, string)
+  ---@type string
+  for line in content:gmatch("[^\r\n]+") do
+    -- Trim any leading or trailing whitespace from the line
+    line = trim_space(line)
+    -- Ignore empty lines or lines starting with #
+    if line ~= "" and line:sub(1, 1) ~= "#" then
+      -- Split the line by the first = sign
+      local _, val_seq = line:match("([^=]+)=(.*)")
+      local key, value = val_seq[1], val_seq[2]
+      -- Trim any leading or trailing whitespace from the key and value
+      key = trim_space(key)
+      value = trim_space(value)
+      -- Check if the value is surrounded by double quotes
+      if value:sub(1, 1) == '"' and value:sub(-1, -1) == '"' then
+        -- Remove the quotes and unescape any escaped characters
+        value = value:sub(2, -2):gsub('\\"', '"')
+      end
+      -- Check if the value is surrounded by single quotes
+      if value:sub(1, 1) == "'" and value:sub(-1, -1) == "'" then
+        -- Remove the quotes
+        value = value:sub(2, -2)
+      end
+      -- Store the key-value pair in the table
+      items[key] = value
+    end
+  end
+  return items
+end
+
+--[[
+  Loads the specified file or a `.env` file
+  Returns the env table or the env table with an error
+]]
+function Dotenv:load(filename: string): (Env, string)
+  if filename == "" then
+  filename = ".env"
+  end
+  local content, err = read_file(filename)
+  if not content then
+    return self.env, err
+  end
+  local items = parse_env(content)
+  for key, value in pairs(items) do
+    if not self.env.vars:has(key) then
+      self.env.vars[key] = value
+    end
+  end
+  return self.env, ""
+end
+
+local dotenv: Dotenv
+return dotenv
