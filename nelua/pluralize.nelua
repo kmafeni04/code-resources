@@ -1,0 +1,46 @@
+require "string"
+require "hashmap"
+
+local function pluralize(singular: string): string
+  -- Special cases first
+  local irregular:hashmap(string, string)
+  irregular["child"] = "children"
+  irregular["goose"] = "geese"
+  irregular["man"] = "men"
+  irregular["woman"] = "women"
+  irregular["tooth"] = "teeth"
+  irregular["foot"] = "feet"
+  irregular["mouse"] = "mice"
+  irregular["person"] = "people"
+  
+  -- Check for irregular forms
+  if irregular:has(singular) then
+      return irregular[singular]
+  end
+  
+  -- Rules in decreasing order of precedence
+  
+  -- Words ending in 'y' preceded by a consonant
+  if singular:match("([^aeiou])y$") then
+      return singular:gsub("y$", "ies")
+  end
+  
+  -- Words ending in 's', 'x', 'z', 'ch', 'sh'
+  if singular:match("s$") or singular:match("x$") or singular:match("z$") or 
+     singular:match("ch$") or singular:match("sh$") then
+      return singular .. "es"
+  end
+  
+  -- Words ending in 'f' or 'fe'
+  if singular:match("f$") then
+      return singular:gsub("f$", "ves")
+  end
+  if singular:match("fe$") then
+      return singular:gsub("fe$", "ves")
+  end
+  
+  -- Default rule: add 's'
+  return singular .. "s"
+end
+
+return pluralize

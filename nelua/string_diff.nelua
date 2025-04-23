@@ -1,0 +1,18 @@
+-- Improve implementation
+local function string_diff(s1: string, s2: string)
+    local diff = ""
+    local len = math.max(#s1, #s2)
+
+    for i = 1, len do
+        local c1 = s1:sub(i, i)
+        local c2 = s2:sub(i, i)
+
+        if c1 ~= c2 then
+            diff = diff .. string.format("Pos %d: '%s' vs '%s'\n", i, c1, c2)
+        end
+    end
+
+    return diff
+end
+
+return string_diff
