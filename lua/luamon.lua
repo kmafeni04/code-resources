@@ -5,15 +5,17 @@
 local lfs = require("lfs")
 local current_time = os.time()
 
+---@param root_dir string
 ---@param file_path string
 ---@param callback function
-local function check_modification(file_path, callback)
+local function check_modification(root_dir, file_path, callback)
   local file_attrs, _, _ = lfs.attributes(file_path)
   if file_attrs then
     local mod = file_attrs.modification
     if mod > current_time then
       current_time = mod
       print(lfs.currentdir() .. "/" .. file_path .. " has been modified")
+      lfs.chdir(root_dir)
       callback()
     end
   end
@@ -26,14 +28,14 @@ end
 ---@field only_file_types? string[] An array of file types to only be monitored
 ---@field recursive? boolean Whether or not subdirectories should be checked, Default: `true`
 
----@param directory string?
+---@param dir string?
 ---@param callback function
 ---@param config? Config
-local function check_dir(directory, callback, config)
+local function check_dir(root_dir, dir, callback, config)
   local recursive = true
-  for file_path in lfs.dir(directory) do
+  for file_path in lfs.dir(dir) do
     if file_path ~= ".." and file_path ~= "." then
-      file_path = directory .. "/" .. file_path
+      file_path = dir .. "/" .. file_path
       if config then
         assert(
           not (config.exclude_file_types and config.only_file_types),
@@ -43,8 +45,7 @@ local function check_dir(directory, callback, config)
         if config.exclude_file_types then
           for _, file_type in ipairs(config.exclude_file_types) do
             local file_match = (
-              file_path:match("^.*%." .. file_type .. "$")
-              or file_path == directory .. "/" .. file_type:sub(2)
+              file_path:match("^.*%." .. file_type .. "$") or file_path == dir .. "/" .. file_type:sub(2)
             )
                 and true
               or false
@@ -52,15 +53,14 @@ local function check_dir(directory, callback, config)
             local ignore_bck = file_path:match(".*%.bck")
 
             if not file_match and not ignore_bck then
-              check_modification(file_path, callback)
+              check_modification(root_dir, file_path, callback)
               break
             end
           end
         elseif config.only_file_types then
           for _, file_type in ipairs(config.only_file_types) do
             local file_match = (
-              file_path:match("^.*%." .. file_type .. "$")
-              or file_path == directory .. "/" .. file_type:sub(2)
+              file_path:match("^.*%." .. file_type .. "$") or file_path == dir .. "/" .. file_type:sub(2)
             )
                 and true
               or false
@@ -68,22 +68,22 @@ local function check_dir(directory, callback, config)
             local ignore_bck = file_path:match(".*%.bck")
 
             if file_match and not ignore_bck then
-              check_modification(file_path, callback)
+              check_modification(root_dir, file_path, callback)
               break
             end
           end
         else
-          check_modification(file_path, callback)
+          check_modification(root_dir, file_path, callback)
         end
       else
-        check_modification(file_path, callback)
+        check_modification(root_dir, file_path, callback)
       end
 
       if recursive then
         local file_attrs, _, _ = lfs.attributes(file_path)
         if file_attrs and file_attrs.mode == "directory" then
           lfs.chdir(file_path)
-          check_dir(".", callback, config)
+          check_dir(root_dir, ".", callback, config)
           lfs.chdir("..")
         end
       end
@@ -132,7 +132,7 @@ local function luamon(directory, callback, config)
   callback()
 
   while true do
-    check_dir(directory, callback, config)
+    check_dir(directory, directory, callback, config)
   end
 end
 
