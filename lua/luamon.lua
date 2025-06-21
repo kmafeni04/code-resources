@@ -49,10 +49,13 @@ local function check_dir(root_dir, dir, callback, config)
           "`exclude_file_types` and `only_file_types` fields can not be present at the same time"
         )
         recursive = config.recursive and config.recursive or recursive
-        if file_attrs and file_attrs.mode == "directory" then
-          if config.exclude_dirs[file_path:sub(#root_dir + 2)] then
-            goto continue
-          end
+        if
+          file_attrs
+          and file_attrs.mode == "directory"
+          and config.exclude_dirs
+          and config.exclude_dirs[file_path:sub(#root_dir + 2)]
+        then
+          goto continue
         end
         if config.exclude_file_types then
           for _, file_type in ipairs(config.exclude_file_types) do
