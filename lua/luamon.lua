@@ -4,6 +4,8 @@
 
 local lfs = require("lfs")
 local current_time = os.time()
+local delay = 4
+local last_ran_time = 0
 
 ---@param root_dir string
 ---@param file_path string
@@ -19,8 +21,11 @@ local function check_modification(root_dir, file_path, callback)
       else
         print(file_path .. " has been modified")
       end
-      lfs.chdir(root_dir)
-      callback()
+      if os.time() - last_ran_time >= delay then
+        lfs.chdir(root_dir)
+        callback()
+      end
+      last_ran_time = os.time()
     end
   end
 end
@@ -32,6 +37,7 @@ end
 ---@field include_file_types? string[] An array of file types to be monitored
 ---@field exclude_dirs? string[] An array of directories to be ignored
 ---@field recursive? boolean Whether or not subdirectories should be checked, Default: `true`
+---@field delay? integer How long to wait before running the callback again when a new change is found, Default: `4`
 
 ---@param root_dir string
 ---@param dir string
@@ -144,6 +150,10 @@ local function luamon(dir, callback, config)
   end
   local changed_dir, err = lfs.chdir(dir)
   assert(changed_dir, err)
+  last_ran_time = os.time()
+  if config and config.delay and type(config.delay) == "number" then
+    delay = config.delay
+  end
   callback()
 
   while true do
