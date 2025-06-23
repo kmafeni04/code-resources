@@ -102,9 +102,10 @@ local function check_dir(root_dir, dir, callback, config)
 
       if recursive then
         if file_attrs and file_attrs.mode == "directory" then
+          local prev_dir = lfs.currentdir()
           lfs.chdir(file_path)
           check_dir(root_dir, ".", callback, config)
-          lfs.chdir(root_dir)
+          lfs.chdir(prev_dir)
         end
       end
     end
