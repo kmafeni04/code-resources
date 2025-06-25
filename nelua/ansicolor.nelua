@@ -60,7 +60,7 @@ function AnsiColor:#|color|#(): AnsiColor
 end
 ## end
 
-function AnsiColor:text(): string
+function AnsiColor:tostring(): string
   return self.data
 end
 
