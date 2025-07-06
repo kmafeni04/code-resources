@@ -60,9 +60,10 @@ html {
 }
 
 body {
+  font-size: 18px;
   color: var(--font-color);
-  min-height: 100svh;
   min-height: 100vh;
+  min-height: 100svh;
 }
 
 table {
