@@ -77,7 +77,11 @@ end
 ---@param callback fun(changed_file: string): nil
 ---@param config? Config
 local function check_dir(root, dir, callback, config)
-  local recursive = (config and type(config.recursive) == "boolean") and config.recursive or true
+  local recursive = true
+  if config and config.recursive then
+    assert(type(config.recursive) == "boolean")
+    recursive = config.recursive
+  end
 
   for entry in lfs.dir(dir) do
     if entry ~= "." and entry ~= ".." then
@@ -127,6 +131,7 @@ end
 
 --[[
   Monitors for file changes in a directory and calls a callback function on any file modification
+  NB: This currently does not monitor file name changes as they do count as file modifications
 
   Usage:
   ```lua
@@ -173,7 +178,8 @@ local function luamon(dir, callback, config)
   assert(ok, err)
 
   last_ran_time = os.time()
-  if config and type(config.delay) == "number" then
+  if config and config.delay then
+    assert(type(config.delay) == "number")
     delay = config.delay
   end
 
