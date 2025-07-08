@@ -1,0 +1,61 @@
+## local function make_option(T)
+  ## static_assert(traits.is_type(T), "invalid type '%s'", T)
+  local T: type = @#[T]#
+
+  local OptionT: type <nickname(#[string.format("Option(%s)", T)]#)> = @record{
+    filled: boolean,
+    value: T
+  }
+
+  ## OptionT.value.is_option = true
+  ## OptionT.value.subtype = T
+
+  function OptionT:set(v: T)
+    self.filled = true
+    self.value = v
+  end
+
+  function OptionT:get(): T
+    assert(self.filled)
+    return self.value
+  end
+
+  function OptionT:get_or(v: T): T
+    return self.filled and self:get() or v
+  end
+
+  function OptionT:is_some(): boolean
+    return self.filled
+  end
+
+  function OptionT:is_none(): boolean
+    return not self.filled
+  end
+
+  function OptionT:is_some_val(v: auto): boolean
+    return self:is_some() and self:get() == v
+  end
+
+  local OptionT_convertible_concept = #[concept(function(t) 
+    return t.type.is_option and t.type.subtype.is_niltype
+  end)]#
+
+  function OptionT.__convert(v: OptionT_convertible_concept) <inline>
+    local val: OptionT
+    return val
+  end
+
+  ## return OptionT
+## end
+
+global Option = #[generalize(make_option)]#
+
+function Option.Some(v: auto): Option(#[v.type]#)
+  local val: Option(#[v.type]#) 
+  val:set(v)
+  return val
+end
+
+function Option.None(): Option(niltype)
+  return {}
+end
