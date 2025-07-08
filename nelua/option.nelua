@@ -3,7 +3,7 @@
   local T: type = @#[T]#
 
   local OptionT: type <nickname(#[string.format("Option(%s)", T)]#)> = @record{
-    filled: boolean,
+    some: boolean,
     value: T
   }
 
@@ -11,44 +11,43 @@
   ## OptionT.value.subtype = T
 
   function OptionT:set(v: T)
-    self.filled = true
+    self.some = true
     self.value = v
   end
 
   function OptionT:get(): T
-    assert(self.filled)
+    assert(self.some)
     return self.value
   end
 
   function OptionT:get_or(v: T): T
-    return self.filled and self:get() or v
+    return self.some and self:get() or v
   end
 
   function OptionT:is_some(): boolean
-    return self.filled
+    return self.some
   end
 
   function OptionT:is_none(): boolean
-    return not self.filled
+    return not self.some
   end
 
   function OptionT:is_some_val(v: auto): boolean
     return self:is_some() and self:get() == v
   end
 
-  local OptionT_convertible_concept = #[concept(function(t) 
-    return t.type.is_option and t.type.subtype.is_niltype
+  local OptionT_convertible_concept = #[concept(function(v) 
+    return v.type.is_option and v.type.subtype.is_niltype
   end)]#
 
-  function OptionT.__convert(v: OptionT_convertible_concept) <inline>
-    local val: OptionT
-    return val
+  function OptionT.__convert(v: OptionT_convertible_concept): OptionT <inline>
+    return {}
   end
 
   ## return OptionT
 ## end
 
-global Option = #[generalize(make_option)]#
+local Option = #[generalize(make_option)]#
 
 function Option.Some(v: auto): Option(#[v.type]#)
   local val: Option(#[v.type]#) 
@@ -59,3 +58,5 @@ end
 function Option.None(): Option(niltype)
   return {}
 end
+
+return Option
