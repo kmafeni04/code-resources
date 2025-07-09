@@ -13,8 +13,10 @@
   --> Prints "nil"
   ```
 ]]
----@param tbl table
----@return table
+
+---@generic T
+---@param tbl T
+---@return T
 local function copy_table(tbl)
   local copy = {}
   for key, value in pairs(tbl) do
