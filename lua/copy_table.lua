@@ -18,10 +18,11 @@
 local function copy_table(tbl)
   local copy = {}
   for key, value in pairs(tbl) do
-    if type(key) == "table" then
-      copy[key] = copy_table(key)
+    if type(value) == "table" then
+      copy[key] = copy_table(value)
+    else
+      copy[key] = value
     end
-    copy[key] = value
   end
   return copy
 end
