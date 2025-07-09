@@ -29,10 +29,9 @@
   ```
 ]]
 ---@param param any
----@param dbg boolean
+---@param dbg boolean | PipeFunc
 ---@param ... PipeFunc
 ---@return ...?
----@overload fun(param: any, ...: PipeFunc): any
 local pipe = function(param, dbg, ...)
   local unpack = table.unpack or unpack
 
@@ -47,7 +46,7 @@ local pipe = function(param, dbg, ...)
   for index, func in ipairs(funcs) do
     current_params = { func(unpack(current_params)) }
     if dbg == true then
-      print("Return of function " .. index .. ":")
+      print("Return(s) of function " .. index .. ":")
       for param_index, param_value in ipairs(current_params) do
         print(param_index .. ": " .. tostring(param_value))
       end
