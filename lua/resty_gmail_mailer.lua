@@ -5,7 +5,7 @@
 ---@param username string Sender's email username
 ---@param password string Sender's email password
 ---@param from string Sender's address
----@param to table Receiver's address
+---@param to string[] Receiver's address
 ---@param subject string Mail subject
 ---@param content string Mail content
 local function mailer_func(username, password, from, to, subject, content)
