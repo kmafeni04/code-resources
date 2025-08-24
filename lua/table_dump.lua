@@ -40,7 +40,7 @@ end
   local table_dump = require("table_dump")
   local tbl = { [1] = 10, hello = 1 }
   print(table_dump.pretty_tostring(tbl))
-  --> Prints 
+  --> Prints
   {
     [1] = 10,
     ["hello"] = 1,
@@ -58,7 +58,7 @@ function table_dump.pretty_tostring(tbl, indent)
   indent = indent or 0
   assert(type(indent) == "number", "Param `indent` must be of type `number`")
   local indent_str = "  "
-  local str = "{\n " .. string.rep(indent_str, indent + 1)
+  local str = "{\n" .. string.rep(indent_str, indent + 1)
   for key, value in pairs(tbl) do
     if type(value) == "table" then
       value = table_dump.pretty_tostring(value, indent + 1)
@@ -68,9 +68,9 @@ function table_dump.pretty_tostring(tbl, indent)
     if type(key) ~= "number" then
       key = '"' .. key .. '"'
     end
-    str = str .. "[" .. key .. "] = " .. tostring(value) .. ",\n " .. string.rep(indent_str, indent + 1)
+    str = str .. "[" .. key .. "] = " .. tostring(value) .. ",\n" .. string.rep(indent_str, indent + 1)
   end
-  return str:sub(1, #str - #indent_str - 1) .. "}"
+  return str:sub(1, #str - #indent_str) .. "}"
 end
 
 return table_dump
