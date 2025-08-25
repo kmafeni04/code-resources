@@ -23,7 +23,12 @@ function table_dump.tostring(tbl)
     if type(value) == "table" then
       value = table_dump.tostring(value)
     elseif type(value) == "string" then
-      value = [["]] .. value .. [["]]
+      print(value:find("\n"))
+      if value:match("\n") then
+        value = "[[" .. value .. "]]"
+      else
+        value = [["]] .. value .. [["]]
+      end
     end
     if type(key) ~= "number" then
       key = '"' .. key .. '"'
@@ -63,7 +68,11 @@ function table_dump.pretty_tostring(tbl, indent)
     if type(value) == "table" then
       value = table_dump.pretty_tostring(value, indent + 1)
     elseif type(value) == "string" then
-      value = [["]] .. value .. [["]]
+      if value:match("\n") then
+        value = "[[" .. value .. "]]"
+      else
+        value = [["]] .. value .. [["]]
+      end
     end
     if type(key) ~= "number" then
       key = '"' .. key .. '"'
